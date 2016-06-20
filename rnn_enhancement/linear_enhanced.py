@@ -39,7 +39,7 @@ def linear(args, output_size, bias, bias_start=0.0, scope=None):
   Raises:
     ValueError: if some of the arguments has unspecified or wrong shape.
   """
-  assert args
+  #assert args
   if not isinstance(args, (list, tuple)):
     args = [args]
 
