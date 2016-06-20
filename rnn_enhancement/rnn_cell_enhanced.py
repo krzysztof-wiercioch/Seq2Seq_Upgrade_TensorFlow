@@ -107,7 +107,7 @@ class BasicRNNCell(RNNCell):
 
   def __call__(self, inputs, state, scope=None):
     """Most basic RNN: output = new_state = tanh(W * input + U * state + B)."""
-    with tf.device("/gpu:"+str(self._gpu_for_layer)):
+    with tf.device("/cpu:0"):
       with tf.variable_scope(scope or type(self).__name__):  # "BasicRNNCell"
         output = tf.tanh(lfe.linear_enhanced([inputs, state], self._num_units, True, weight_initializer = self._weight_initializer, orthogonal_scale_factor = self._orthogonal_scale_factor))
       return output, output
@@ -137,7 +137,7 @@ class BasicRNNCell_Interconnect(RNNCell):
 
   def __call__(self, inputs, state, scope=None):
     """Most basic RNN: output = new_state = tanh(W * input + U * state + B)."""
-    with tf.device("/gpu:"+str(self._gpu_for_layer)):
+    with tf.device("/cpu:0"):
       with tf.variable_scope(scope or type(self).__name__):  # "BasicRNNCell"
         output = tf.tanh(lfe.linear_enhanced([inputs, state], self._num_units, True, weight_initializer = self._weight_initializer, orthogonal_scale_factor = self._orthogonal_scale_factor))
       return output, output
@@ -204,7 +204,7 @@ class UnitaryRNNCell(RNNCell):
 
 
   def __call__(self, inputs, state, scope=None):
-    with tf.device("/gpu:"+str(self._gpu_for_layer)):
+    with tf.device("/cpu:0"):
       print('testing')
       with tf.variable_scope(scope or type(self).__name__):  # "UnitaryRNNCell"
         with tf.variable_scope("UnitaryGates"):  # Reset gate and update gate.
@@ -316,7 +316,7 @@ class JZS1Cell(RNNCell):
     return self._num_units
 
   def __call__(self, inputs, state, scope=None):
-    with tf.device("/gpu:"+str(self._gpu_for_layer)):
+    with tf.device("/cpu:0"):
       """JZS1, mutant 1 with n units cells."""
       with tf.variable_scope(scope or type(self).__name__):  # "JZS1Cell"
         with tf.variable_scope("Zinput"):  # Reset gate and update gate.
@@ -367,7 +367,7 @@ class JZS2Cell(RNNCell):
     return self._num_units
 
   def __call__(self, inputs, state, scope=None):
-    with tf.device("/gpu:"+str(self._gpu_for_layer)):
+    with tf.device("/cpu:0"):
       """JZS2, mutant 2 with n units cells."""
       with tf.variable_scope(scope or type(self).__name__):  # "JZS1Cell"
         with tf.variable_scope("Zinput"):  # Reset gate and update gate.
@@ -417,7 +417,7 @@ class JZS3Cell(RNNCell):
     return self._num_units
 
   def __call__(self, inputs, state, scope=None):
-    with tf.device("/gpu:"+str(self._gpu_for_layer)):
+    with tf.device("/cpu:0"):
       """JZS3, mutant 2 with n units cells."""
       with tf.variable_scope(scope or type(self).__name__):  # "JZS1Cell"
         with tf.variable_scope("Zinput"):  # Reset gate and update gate.
@@ -472,7 +472,7 @@ class GRUCell(RNNCell):
     return self._num_units
 
   def __call__(self, inputs, state,scope=None):
-    with tf.device("/gpu:"+str(self._gpu_for_layer)):
+    with tf.device("/cpu:0"):
 
       '''Modifying skip connections part -- Added Additional Input
 
@@ -548,7 +548,7 @@ class GRUCell_InterConnect(RNNCell):
     return self._num_units
 
   def __call__(self, inputs, state, past_inputs = None, past_states = None, scope=None):
-    with tf.device("/gpu:"+str(self._gpu_for_layer)):
+    with tf.device("/cpu:0"):
 
       '''This is a modified GRU that has the ability to incorporate an additional past input and/or 
       additional past state. Very useful for skip-connecting RNN's horizontally or vertically. '''
@@ -637,7 +637,7 @@ class BasicLSTMCell(RNNCell):
     return 2 * self._num_units
 
   def __call__(self, inputs, state, scope=None):
-    with tf.device("/gpu:"+str(self._gpu_for_layer)):
+    with tf.device("/cpu:0"):
       """Long short-term memory cell (LSTM)."""
       with tf.variable_scope(scope or type(self).__name__):  # "BasicLSTMCell"
         # Parameters of gates are concatenated into one multiply for efficiency.
@@ -739,7 +739,7 @@ class LSTMCell(RNNCell):
 
   def __call__(self, input_, state, scope=None):
     
-      with tf.device("/gpu:"+str(self._gpu_for_layer)):
+      with tf.device("/cpu:0"):
 
         """Run one step of LSTM.
 
@@ -851,7 +851,7 @@ class IdentityRNNCell(RNNCell):
     """Most basic RNN: output = new_state = tanh(W * input + U * state + B)."""
 
     '''we need to separate the matmul's because of the identity matrix configuration'''
-    with tf.device("/gpu:"+str(self._gpu_for_layer)):
+    with tf.device("/cpu:0"):
       with tf.variable_scope(scope or type(self).__name__):  # "IdentityRNNCell"
         with tf.variable_scope("inputs_weights"):
           input_weight_matrix_updated = lfe.linear(lfe.linear([inputs], self._num_units, True, weight_initializer = "constant",
@@ -1013,7 +1013,7 @@ class DropoutWrapper(RNNCell):
 
   def __call__(self, inputs, state):
     """Run the cell with the declared dropouts."""
-    with tf.device("/gpu:"+str(self._gpu_for_layer)):
+    with tf.device("/cpu:0"):
       if (not isinstance(self._input_keep_prob, float) or
           self._input_keep_prob < 1):
         inputs = tf.nn.dropout(inputs, self._input_keep_prob, seed=self._seed)
